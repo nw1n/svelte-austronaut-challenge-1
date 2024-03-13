@@ -12,6 +12,7 @@
 			return;
 		}
 		onAstronautAdded(nameValue, stationValue);
+		nameValue = undefined;
 	}
 </script>
 
@@ -19,8 +20,8 @@
 	<section>
 		<input type="text" bind:value={nameValue} placeholder="Enter a name..." />
 		<select bind:value={stationValue}>
-			{#each Object.entries(SpaceStations) as spaceStation}
-				<option value={spaceStation[0]}>{spaceStation[1]}</option>
+			{#each Object.values(SpaceStations) as spaceStation}
+				<option value={spaceStation}>{spaceStation}</option>
 			{/each}
 		</select>
 	</section>
