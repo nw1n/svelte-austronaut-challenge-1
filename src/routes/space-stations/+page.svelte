@@ -9,6 +9,7 @@
 <main>
 	<SpaceStation name={SpaceStations.Iss}></SpaceStation>
 	<SpaceStation name={SpaceStations.Tiangong}></SpaceStation>
+	<img id="rocket" src="/rocket.png" alt="Rocket" />
 	<div id="add-astronaut-form">
 		<AddAstronautForm {onAstronautAdded}></AddAstronautForm>
 	</div>
@@ -21,6 +22,7 @@
 
 		display: grid;
 		grid-template-columns: 1fr 1fr;
+		grid-template-rows: auto max-content max-content;
 		justify-items: center;
 		align-items: center;
 
@@ -36,7 +38,17 @@
 		letter-spacing: 8px;
 	}
 
-	#add-astronaut-form {
+	#add-astronaut-form,
+	#rocket {
 		grid-column: span 2;
+	}
+
+	#add-astronaut-form {
+		padding-bottom: 6rem;
+	}
+
+	#rocket {
+		align-self: end;
+		height: 250px;
 	}
 </style>
