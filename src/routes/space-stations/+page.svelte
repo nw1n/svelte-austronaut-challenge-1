@@ -5,22 +5,33 @@
 	import type { Astronaut } from '../../lib';
 	import { loadAstronauts } from './astronaut-api.loader.svelte';
 
-	let astronauts = $state<{ iss: Astronaut[]; tiangong: Astronaut[] } | undefined>();
+	let astronauts = $state<
+		{ [SpaceStations.Iss]: Astronaut[]; [SpaceStations.Tiangong]: Astronaut[] } | undefined
+	>();
 
 	$effect(() => {
 		loadAstronauts().then((dto) => {
 			const iss = dto.filter((astronaut) => astronaut.craft === SpaceStations.Iss);
 			const tiangong = dto.filter((astronaut) => astronaut.craft === SpaceStations.Tiangong);
-			astronauts = { iss, tiangong };
+			astronauts = { [SpaceStations.Iss]: iss, [SpaceStations.Tiangong]: tiangong };
 		});
 	});
 
-	function onAstronautAdded(name: string, station: SpaceStations) {}
+	function onAstronautAdded(name: string, station: SpaceStations) {
+		if (!astronauts) {
+			return;
+		}
+		astronauts = {
+			...astronauts,
+			[station]: [...astronauts[station], <Astronaut>{ name, craft: station }]
+		};
+		console.log(astronauts);
+	}
 </script>
 
 <main>
-	<SpaceStation name={SpaceStations.Iss} astronauts={astronauts?.iss}></SpaceStation>
-	<SpaceStation name={SpaceStations.Tiangong} astronauts={astronauts?.tiangong}></SpaceStation>
+	<SpaceStation name={SpaceStations.Iss} astronauts={astronauts?.ISS}></SpaceStation>
+	<SpaceStation name={SpaceStations.Tiangong} astronauts={astronauts?.Tiangong}></SpaceStation>
 	<img id="rocket" src="/rocket.png" alt="Rocket" />
 	<div id="add-astronaut-form">
 		<AddAstronautForm {onAstronautAdded}></AddAstronautForm>

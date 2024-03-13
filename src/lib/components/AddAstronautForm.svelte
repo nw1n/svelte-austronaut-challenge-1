@@ -5,19 +5,29 @@
 		$props();
 
 	let nameValue = $state<string | undefined>();
+	let stationValue = $state<SpaceStations | undefined>();
+
+	function emitAstronautAdded(): void {
+		if (!nameValue || !stationValue) {
+			return;
+		}
+		onAstronautAdded(nameValue, stationValue);
+	}
 </script>
 
 <div class="add-astronaut-form-container">
 	<section>
 		<input type="text" bind:value={nameValue} placeholder="Enter a name..." />
-		<select>
+		<select bind:value={stationValue}>
 			{#each Object.entries(SpaceStations) as spaceStation}
 				<option value={spaceStation[0]}>{spaceStation[1]}</option>
 			{/each}
 		</select>
 	</section>
 
-	<button disabled={!nameValue} type="button">Send {nameValue || '...'} to space 🚀</button>
+	<button disabled={!nameValue} onclick={emitAstronautAdded} type="button">
+		Send {nameValue || '...'} to space 🚀
+	</button>
 </div>
 
 <style>
