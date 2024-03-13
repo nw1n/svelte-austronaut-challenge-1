@@ -1,5 +1,10 @@
+<script lang="ts">
+	import SpaceStation from '$lib/components/SpaceStation.svelte';
+</script>
+
 <main>
-	<pre>insert space stations</pre>
+	<SpaceStation name="ISS"></SpaceStation>
+	<SpaceStation name="Tiangong"></SpaceStation>
 </main>
 
 <style>
@@ -7,9 +12,9 @@
 		font-family: 'Roboto';
 		color: white;
 
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		justify-items: center;
 		align-items: center;
 
 		background-image: url('/background.jpg');
