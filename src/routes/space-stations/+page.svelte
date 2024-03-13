@@ -1,10 +1,17 @@
 <script lang="ts">
+	import AddAstronautForm from '$lib/components/AddAstronautForm.svelte';
 	import SpaceStation from '$lib/components/SpaceStation.svelte';
+	import { SpaceStations } from '$lib/model/space.stations.model';
+
+	function onAstronautAdded(name: string, station: SpaceStations) {}
 </script>
 
 <main>
-	<SpaceStation name="ISS"></SpaceStation>
-	<SpaceStation name="Tiangong"></SpaceStation>
+	<SpaceStation name={SpaceStations.Iss}></SpaceStation>
+	<SpaceStation name={SpaceStations.Tiangong}></SpaceStation>
+	<div id="add-astronaut-form">
+		<AddAstronautForm {onAstronautAdded}></AddAstronautForm>
+	</div>
 </main>
 
 <style>
@@ -27,5 +34,9 @@
 	span {
 		font-size: 48px;
 		letter-spacing: 8px;
+	}
+
+	#add-astronaut-form {
+		grid-column: span 2;
 	}
 </style>

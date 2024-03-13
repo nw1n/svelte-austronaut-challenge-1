@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { Astronaut } from '../model/astronaut.model';
+	import type { SpaceStations } from '../model/space.stations.model';
 
-	let { name, astronauts }: { name: 'ISS' | 'Tiangong'; astronauts?: Astronaut[] } = $props();
+	let { name, astronauts }: { name: SpaceStations; astronauts?: Astronaut[] } = $props();
 
 	let image = $derived(`/${name.toLocaleLowerCase()}.png`);
 </script>
