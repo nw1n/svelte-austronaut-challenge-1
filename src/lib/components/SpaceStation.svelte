@@ -14,16 +14,16 @@
 		{#snippet astronautsList(astronauts)}
 			<ul>
 				{#each astronauts as astronaut}
-					<li>{astronaut}</li>
+					<li>{astronaut.name}</li>
 				{/each}
 			</ul>
 		{/snippet}
 
 		<h2>Astronauts</h2>
-		{#if astronauts}
+		{#if (astronauts?.length ?? 0) > 0}
 			{@render astronautsList(astronauts)}
 		{:else}
-			<p>This station is empty</p>
+			<p>Such empty, much wow</p>
 		{/if}
 	</section>
 </div>
@@ -35,5 +35,9 @@
 
 	img {
 		width: 400px;
+	}
+
+	ul {
+		padding-left: 16px;
 	}
 </style>
