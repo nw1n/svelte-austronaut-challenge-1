@@ -13,10 +13,18 @@
 <style>
 	main {
 		font-family: 'Roboto';
+		color: white;
+
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+
+		background-image: url('/background.jpg');
+		background-size: cover;
+
+		height: 100vh;
+		width: 100vw;
 	}
 
 	span {
