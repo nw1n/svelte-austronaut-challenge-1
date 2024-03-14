@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { SpaceStations } from '../model/space.stations.model';
+	import { SpaceStationNames } from '..';
 
-	let { onAstronautAdded }: { onAstronautAdded: (name: string, station: SpaceStations) => void } =
-		$props();
+	let {
+		onAstronautAdded
+	}: { onAstronautAdded: (name: string, station: SpaceStationNames) => void } = $props();
 
 	let nameValue = $state<string | undefined>();
-	let stationValue = $state<SpaceStations | undefined>();
+	let stationValue = $state<SpaceStationNames | undefined>();
 
 	function emitAstronautAdded(): void {
 		if (!nameValue || !stationValue) {
@@ -20,7 +21,7 @@
 	<section>
 		<input type="text" bind:value={nameValue} placeholder="Enter a name..." />
 		<select bind:value={stationValue}>
-			{#each Object.values(SpaceStations) as spaceStation}
+			{#each Object.values(SpaceStationNames) as spaceStation}
 				<option value={spaceStation}>{spaceStation}</option>
 			{/each}
 		</select>

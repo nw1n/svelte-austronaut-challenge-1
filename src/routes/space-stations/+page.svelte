@@ -1,41 +1,50 @@
 <script lang="ts">
+	import { SpaceStationModel, SpaceStationNames, type Astronaut } from '$lib';
 	import AddAstronautForm from '$lib/components/AddAstronautForm.svelte';
 	import SpaceStation from '$lib/components/SpaceStation.svelte';
-	import { SpaceStations } from '$lib/model/space.stations.model';
-	import type { Astronaut } from '../../lib';
 	import { loadAstronauts } from './astronaut-api.loader.svelte';
 
-	let astronauts = getAstronauts();
+	let spaceStations = getSpaceStations();
 
-	async function getAstronauts(): Promise<{
-		[SpaceStations.Iss]: Astronaut[];
-		[SpaceStations.Tiangong]: Astronaut[];
-	}> {
+	async function getSpaceStations(): Promise<SpaceStationModel[]> {
 		const astronauts = await loadAstronauts();
-		const astronautsOnIss = astronauts.filter((astronaut) => astronaut.craft === SpaceStations.Iss);
-		const astronautsOnTiangong = astronauts.filter(
-			(astronaut) => astronaut.craft === SpaceStations.Tiangong
+		const astronautsOnIss = astronauts.filter(
+			(astronaut) => astronaut.craft === SpaceStationNames.Iss
 		);
-		return { [SpaceStations.Iss]: astronautsOnIss, [SpaceStations.Tiangong]: astronautsOnTiangong };
+		const astronautsOnTiangong = astronauts.filter(
+			(astronaut) => astronaut.craft === SpaceStationNames.Tiangong
+		);
+
+		return [
+			new SpaceStationModel(SpaceStationNames.Iss, 10, astronautsOnIss),
+			new SpaceStationModel(SpaceStationNames.Tiangong, 5, astronautsOnTiangong)
+		];
 	}
 
-	async function onAstronautAdded(name: string, station: SpaceStations) {
-		const existingAstronauts = await astronauts;
-		astronauts = Promise.resolve({
-			...existingAstronauts,
-			[station]: [...existingAstronauts[station], <Astronaut>{ name, craft: station }]
-		});
+	async function onAstronautAdded(name: string, station: SpaceStationNames) {
+		const allSpaceStations = await spaceStations;
+		const spaceStationToUpdate = allSpaceStations.find(
+			(spaceStation) => spaceStation.name === station
+		);
+		if (spaceStationToUpdate && spaceStationToUpdate.astronauts) {
+			spaceStationToUpdate.astronauts = [
+				...spaceStationToUpdate.astronauts,
+				<Astronaut>{ name, craft: station }
+			];
+		}
 	}
 </script>
 
 <main>
-	{#await astronauts}
+	{#await spaceStations}
 		<h2 class="center">Loading astronauts 🛰️...</h2>
 	{:then spaceStations}
-		<SpaceStation name={SpaceStations.Iss} astronauts={spaceStations.ISS}></SpaceStation>
-		<SpaceStation name={SpaceStations.Tiangong} astronauts={spaceStations.Tiangong}></SpaceStation>
-	{:catch}
+		{#each spaceStations as spaceStation}
+			<SpaceStation {spaceStation}></SpaceStation>
+		{/each}
+	{:catch error}
 		<h2 class="center">The astronauts were intercepted by aliens 👽</h2>
+		{@debug error}
 	{/await}
 
 	<img id="rocket" src="/rocket.png" alt="Rocket" />

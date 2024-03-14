@@ -1,15 +1,19 @@
 <script lang="ts">
-	import type { Astronaut } from '../model/astronaut.model';
-	import type { SpaceStations } from '../model/space.stations.model';
+	import type { SpaceStationModel } from '..';
 
-	let { name, astronauts }: { name: SpaceStations; astronauts?: Astronaut[] } = $props();
+	let { spaceStation }: { spaceStation: SpaceStationModel } = $props();
 
-	let image = $derived(`/${name.toLocaleLowerCase()}.png`);
+	let image = $derived(`/${spaceStation.name?.toLocaleLowerCase()}.png`);
 </script>
 
 <div class="space-station-container">
-	<h1>{name}</h1>
-	<img src={image} alt={name} />
+	<h1>{spaceStation.name}</h1>
+	<img src={image} alt={spaceStation.name} />
+	{#if spaceStation.capacityReached}
+		<section id="max-capacity">
+			<p>Capacity reached, please send some astronauts back to earth</p>
+		</section>
+	{/if}
 	<section class="astronauts">
 		{#snippet astronautsList(astronauts)}
 			<ul>
@@ -20,8 +24,8 @@
 		{/snippet}
 
 		<h2>Astronauts</h2>
-		{#if (astronauts?.length ?? 0) > 0}
-			{@render astronautsList(astronauts)}
+		{#if (spaceStation.astronauts?.length ?? 0) > 0}
+			{@render astronautsList(spaceStation.astronauts)}
 		{:else}
 			<p>Such empty, much wow</p>
 		{/if}
@@ -39,5 +43,11 @@
 
 	ul {
 		padding-left: 16px;
+	}
+
+	#max-capacity {
+		padding: 16px;
+		background-color: lightcoral;
+		color: black;
 	}
 </style>

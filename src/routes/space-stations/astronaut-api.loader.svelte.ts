@@ -3,6 +3,7 @@ import type { Astronaut } from '$lib';
 export async function loadAstronauts(): Promise<Astronaut[]> {
 	return fetch('http://api.open-notify.org/astros.json')
 		.then((response) => {
+			console.log(response);
 			if (!response.ok) {
 				throw new Error('Unable to load astronauts');
 			}
