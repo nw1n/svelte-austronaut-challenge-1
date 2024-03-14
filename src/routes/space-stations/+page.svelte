@@ -44,7 +44,6 @@
 		{/each}
 	{:catch error}
 		<h2 class="center">The astronauts were intercepted by aliens 👽</h2>
-		{@debug error}
 	{/await}
 
 	<img id="rocket" src="/rocket.png" alt="Rocket" />
