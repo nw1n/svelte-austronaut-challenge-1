@@ -5,33 +5,39 @@
 	import type { Astronaut } from '../../lib';
 	import { loadAstronauts } from './astronaut-api.loader.svelte';
 
-	let astronauts = $state<
-		{ [SpaceStations.Iss]: Astronaut[]; [SpaceStations.Tiangong]: Astronaut[] } | undefined
-	>();
+	let astronauts = getAstronauts();
 
-	$effect(() => {
-		loadAstronauts().then((dto) => {
-			const iss = dto.filter((astronaut) => astronaut.craft === SpaceStations.Iss);
-			const tiangong = dto.filter((astronaut) => astronaut.craft === SpaceStations.Tiangong);
-			astronauts = { [SpaceStations.Iss]: iss, [SpaceStations.Tiangong]: tiangong };
+	async function getAstronauts(): Promise<{
+		[SpaceStations.Iss]: Astronaut[];
+		[SpaceStations.Tiangong]: Astronaut[];
+	}> {
+		const astronauts = await loadAstronauts();
+		const astronautsOnIss = astronauts.filter((astronaut) => astronaut.craft === SpaceStations.Iss);
+		const astronautsOnTiangong = astronauts.filter(
+			(astronaut) => astronaut.craft === SpaceStations.Tiangong
+		);
+		return { [SpaceStations.Iss]: astronautsOnIss, [SpaceStations.Tiangong]: astronautsOnTiangong };
+	}
+
+	async function onAstronautAdded(name: string, station: SpaceStations) {
+		const existingAstronauts = await astronauts;
+		astronauts = Promise.resolve({
+			...existingAstronauts,
+			[station]: [...existingAstronauts[station], <Astronaut>{ name, craft: station }]
 		});
-	});
-
-	function onAstronautAdded(name: string, station: SpaceStations) {
-		if (!astronauts) {
-			return;
-		}
-		astronauts = {
-			...astronauts,
-			[station]: [...astronauts[station], <Astronaut>{ name, craft: station }]
-		};
-		console.log(astronauts);
 	}
 </script>
 
 <main>
-	<SpaceStation name={SpaceStations.Iss} astronauts={astronauts?.ISS}></SpaceStation>
-	<SpaceStation name={SpaceStations.Tiangong} astronauts={astronauts?.Tiangong}></SpaceStation>
+	{#await astronauts}
+		<h2 class="center">Loading astronauts 🛰️...</h2>
+	{:then spaceStations}
+		<SpaceStation name={SpaceStations.Iss} astronauts={spaceStations.ISS}></SpaceStation>
+		<SpaceStation name={SpaceStations.Tiangong} astronauts={spaceStations.Tiangong}></SpaceStation>
+	{:catch}
+		<h2 class="center">The astronauts were intercepted by aliens 👽</h2>
+	{/await}
+
 	<img id="rocket" src="/rocket.png" alt="Rocket" />
 	<div id="add-astronaut-form">
 		<AddAstronautForm {onAstronautAdded}></AddAstronautForm>
@@ -62,7 +68,8 @@
 	}
 
 	#add-astronaut-form,
-	#rocket {
+	#rocket,
+	.center {
 		grid-column: span 2;
 	}
 
